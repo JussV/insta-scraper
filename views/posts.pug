@@ -1,0 +1,33 @@
+extends layout
+
+block content
+  div.container
+    div.row
+      div.mb-2.card(style='width: 50%;')
+        div.card-body
+          h5.card-title #{posts[0].user.name}
+          h6.card-subtitle.mb-2.text-muted #{posts[0].user.description}
+          span.p-2.badge.badge-success Followers #{posts[0].user.followers}
+          span.p-2.ml-2.badge.badge-info Following #{posts[0].user.following}
+
+    div.row
+      div.table-responsive
+        table#instaposts.table-striped.table-bordered
+          thead
+            tr
+              th.p-2 ID
+              th.p-2 Caption
+              th.p-2 URL
+          tbody
+            each post in posts
+              tr
+                td.p-2 #{post.id}
+                td.p-2 #{post.caption}
+                td.p-2(data-sort=post.url)
+                  a(href=post.url, target='_blank')
+                    img.img-fluid(src=post.url)
+
+  script.
+    $(document).ready(function () {
+      $('#instaposts').DataTable();
+    });
