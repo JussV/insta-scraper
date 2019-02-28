@@ -1,5 +1,10 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  div.container
+    form(method='POST' action='/scrape')
+      div.row
+        div.input-group.mb-3
+          input.form-control(type='text', name='username', placeholder="Instagram username")
+          div.input-group-append
+            button.btn.btn-outline-secondary(type="submit") Submit

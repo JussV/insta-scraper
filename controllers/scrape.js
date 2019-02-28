@@ -7,7 +7,7 @@ const BASE_URL = 'https://www.instagram.com/';
 
 const scrape = (req, res) => {
 
-    let username = req.params.id;
+    let username = req.body.username;
     let url = BASE_URL + username;
     let userId = '';
 
@@ -20,6 +20,12 @@ const scrape = (req, res) => {
 
             // Get the script of the html page that contains the json
             let script = $('script').eq(4).html();
+
+            if (script === '')
+                return reject(new Error("User is not found on Instagram"));
+
+            if (script.indexOf('config') < 0)
+               return reject(new Error("User does not have a public profile on Instagram"));
 
             // Traverse the JSON of instagram response
             let { entry_data: { ProfilePage : {[0] : { graphql : {user} }} } } = JSON.parse(/window\._sharedData = (.+);/g.exec(script)[1]);
@@ -100,16 +106,20 @@ const respondWithResult = (res, statusCode) => {
     statusCode = statusCode || 200;
     return function(entity) {
         if (entity) {
-            res.status(statusCode).json(entity);
+            res.status(statusCode).render("posts", {
+                posts: entity
+            });
         }
     };
 }
 
 
 const handleError = (res, statusCode) => {
-    statusCode = statusCode || 500;
+    statusCode = statusCode || 400;
     return function(err) {
-        res.status(statusCode).send(err);
+        res.status(statusCode).render("error", {
+            error: err
+        });
     };
 }
 

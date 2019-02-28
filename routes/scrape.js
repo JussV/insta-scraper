@@ -3,6 +3,6 @@ var router = express.Router();
 var controller = require('../controllers/scrape');
 
 /* GET (scrape) data for user . */
-router.get('/:id', controller.scrape);
+router.post('/', controller.scrape);
 
 module.exports = router;
